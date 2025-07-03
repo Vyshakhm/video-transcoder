@@ -23,24 +23,18 @@
             <button type="submit" class="btn btn-primary">Upload & Convert</button>
         </form>
 
-        {% if error %}
-        <div class="alert alert-danger mt-4">{{ error }}</div>
-        {% endif %}
-
         {% if output_video %}
-  <hr>
-  <h4>Converted Video:</h4>
-
-    {% if note %}
-        <div class="alert alert-warning">{{ note }}</div>
-        <a href="{{ output_video }}" class="btn btn-secondary" download>Download AVI File</a>
-    {% else %}
-        <video controls width="100%" class="mt-3">
-        <source src="{{ output_video }}" type="video/{{ output_video|slice:'-3:' }}">
-        Your browser does not support HTML5 video.
-        </video>
-    {% endif %}
-    {% endif %}
+            <hr>
+                <h4>Your converted video is ready for download:</h4>
+            {% if note %}
+                <div class="alert alert-warning">{{ note }}</div>
+            {% endif %}
+                <a href="{{ output_video }}" class="btn btn-primary mt-2" download>
+                ⬇️ Download Video
+                </a>
+        {% endif %}
+        
+        
 
     </div>
 </div>
