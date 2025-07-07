@@ -1,0 +1,42 @@
+<!-- templates/video_app/upload.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Format Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light py-5">
+<div class="container">
+    <h2 class="text-center mb-4">Video Format Converter</h2>
+    <div class="card shadow p-4">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.video.label_tag }}
+                {{ form.video }}
+            </div>
+            <div class="mb-3">
+                {{ form.format.label_tag }}
+                {{ form.format }}
+            </div>
+            <button type="submit" class="btn btn-primary">Upload & Convert</button>
+        </form>
+
+        {% if output_video %}
+            <hr>
+                <h4>Your converted video is ready for download:</h4>
+            {% if note %}
+                <div class="alert alert-warning">{{ note }}</div>
+            {% endif %}
+                <a href="{{ output_video }}" class="btn btn-primary mt-2" download>
+                ⬇️ Download your Video
+                </a>
+        {% endif %}
+        
+        
+
+    </div>
+</div>
+</body>
+</html>
