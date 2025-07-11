@@ -1,25 +1,25 @@
-
-version: 1.0
+version: '3.8'
 
 services:
-  web:
+  django-app:
     build:
       context: .
-      dockerfile: Dockerfile
     container_name: django-app
+    command: gunicorn transcodenexus.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - ./app:/app
+      - .:/app
+    working_dir: /app
     expose:
       - "8000"
-    depends_on:
-      - nginx
+    environment:
+      - DEBUG=False
 
   nginx:
     image: nginx:latest
     container_name: nginx-proxy
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - "80:80"
+      - "8000:8000"
     depends_on:
-      - web
+      - django-app
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
