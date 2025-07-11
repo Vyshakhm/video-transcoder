@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    docker-compose down || true
+                    docker-compose down --remove-orphans
                     """
                 }
             }
