@@ -14,7 +14,7 @@ pipeline {
 
         stage('Clean Up Containers') {
             steps {
-                echo "🧹 Stopping and removing any existing containers..."
+                echo "Stopping and removing any existing containers..."
                 sh '''
                     docker compose down || true
                     docker rm -f django-app || true
@@ -28,7 +28,7 @@ pipeline {
 
         stage('Build & Deploy') {
             steps {
-                echo "🚀 Building and deploying Docker containers..."
+                echo "Building and deploying Docker containers..."
                 sh '''
                     docker compose build
                     docker compose up -d
@@ -39,10 +39,10 @@ pipeline {
 
     post {
         failure {
-            echo "❌ Deployment failed."
+            echo "Deployment failed."
         }
         success {
-            echo "✅ Deployment completed successfully."
+            echo "Deployment completed successfully."
         }
     }
 }

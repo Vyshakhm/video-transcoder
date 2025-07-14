@@ -28,4 +28,4 @@ RUN python manage.py migrate
 EXPOSE 8000
 
 # Run using Gunicorn
-CMD ["gunicorn", "transcodenexus.wsgi:application", "--bind", "0.0.0.0:8000", "--timeout", "120"]v
+CMD ["gunicorn", "transcodenexus.wsgi:application", "--bind", "0.0.0.0:8000", "--timeout", "120"]
