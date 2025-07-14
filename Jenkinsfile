@@ -1,46 +1,11 @@
-pipeline {
-    agent any
+stage('Build & Deploy') {
+     steps {
+            sh '''
+                echo "Tearing down old containers..."
+                docker-compose down --remove-orphans
 
-    environment {
-        COMPOSE_PROJECT_NAME = 'video_transcoder'
-    }
-
-    stages {
-
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Vyshakhm/video-transcoder.git'
-            }
-        }
-
-        stage('Stop & Remove Existing Containers') {
-            steps {
-                script {
-                    sh """
-                    docker-compose down --remove-orphans
-                    """
-                }
-            }
-        }
-
-        stage('Build & Deploy with Docker Compose') {
-            steps {
-                script {
-                    sh """
-                    docker-compose build
-                    docker-compose up -d
-                    """
-                }
-            }
+                echo "Rebuilding and starting fresh containers..."
+                docker-compose up -d --build
+             '''
         }
     }
-
-    post {
-        success {
-            echo '✅ Deployment completed successfully.'
-        }
-        failure {
-            echo '❌ Deployment failed.'
-        }
-    }
-}
