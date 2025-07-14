@@ -1,11 +1,42 @@
-stage('Build & Deploy') {
-     steps {
-            sh '''
-                echo "Tearing down old containers..."
-                docker-compose down --remove-orphans
+pipeline {
+    agent any
 
-                echo "Rebuilding and starting fresh containers..."
-                docker-compose up -d --build
-             '''
+    triggers {
+        pollSCM('* * * * *') // every minute (adjust as needed)
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/Vyshakhm/video-transcoder.git'
+            }
+        }
+
+        stage('Clean Up Containers') {
+            steps {
+                sh '''
+                    docker compose down --remove-orphans || true
+                    docker rm -f django-app nginx-proxy || true
+                '''
+            }
+        }
+
+        stage('Build & Deploy') {
+            steps {
+                sh '''
+                    docker compose build
+                    docker compose up -d
+                '''
+            }
         }
     }
+
+    post {
+        failure {
+            echo '❌ Deployment failed.'
+        }
+        success {
+            echo '✅ Deployment succeeded.'
+        }
+    }
+}
