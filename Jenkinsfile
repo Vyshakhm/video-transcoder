@@ -6,7 +6,7 @@ pipeline {
         REMOTE_USER = "ubuntu"
         REMOTE_HOST = "10.0.1.126"
         REMOTE_PATH = "/home/ubuntu/app"
-        SSH_KEY = credentials('62209d52-3527-4503-b79c-5dedbce5836a') // Add your SSH private key in Jenkins Credentials
+        SSH_KEY = credentials('Jenkins_ssh') // Add your SSH private key in Jenkins Credentials
     }
 
     stages {
@@ -18,7 +18,7 @@ pipeline {
 
         stage('Copy Files to Remote') {
             steps {
-                sshagent(credentials: ['62209d52-3527-4503-b79c-5dedbce5836a']) {
+                sshagent(credentials: ['Jenkins_ssh']) {
                     sh '''
                     echo 🗂️ Copying source files to remote server...
                     rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
@@ -29,7 +29,7 @@ pipeline {
 
         stage('Cleaning build..') {
             steps {
-                sshagent(credentials: ['62209d52-3527-4503-b79c-5dedbce5836a']) {
+                sshagent(credentials: ['Jenkins_ssh']) {
                     sh '''
                     echo 🚀 Cleaning old build...
                     ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
@@ -43,21 +43,20 @@ pipeline {
                 }
             }
         }
-    
 
-        stage('Build & Deploy') {
+        stage('Cleaning build..') {
             steps {
-                echo "Building and deploying Docker containers..."
-                sh '''
+                sshagent(credentials: ['Jenkins_ssh']) {
+                    sh '''
                 echo 🚀 Deploying on remote server...
                 ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
                     docker compose build
                     docker compose up -d
                 EOF
                 '''
+                }
             }
         }
-    }
 
     post {
         failure {
