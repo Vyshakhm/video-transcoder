@@ -30,25 +30,26 @@ pipeline {
         stage('Cleaning build..') {
             steps {
                 sshagent(credentials: ['Jenkins_ssh']) {
-                    sh '''
+                    sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@10.0.1.126 << 'EOF'
                         echo "✅ Connected to remote server"
 
-                        # Stop containers safely (ignore if not running)
+                        # Navigate to app folder
+                        cd /home/ubuntu/app
+
+                        # Stop and remove containers safely
                         docker stop django-app || true
                         docker rm django-app || true
                         docker stop nginx-proxy || true
                         docker rm nginx-proxy || true
 
-                        cd /home/ubuntu/app
-
-                        # Start fresh
+                        # Deploy fresh containers
                         docker compose down || true
                         docker compose up -d --build
 
                         echo "✅ Deployment complete"
                         EOF
-                    '''
+                        """
                 }
             }
         }
