@@ -44,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('Cleaning build..') {
+        stage('Build and deploy..') {
             steps {
                 sshagent(credentials: ['Jenkins_ssh']) {
                     sh '''
