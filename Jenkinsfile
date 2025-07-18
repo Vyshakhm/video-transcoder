@@ -20,10 +20,10 @@ pipeline {
             steps {
                 sshagent(credentials: ['Jenkins_ssh']) {
                     sh '''
-                        echo "🗂️ Copying files to remote..."
-                        rsync -avz --delete --ignore-errors --exclude=.git --exclude=*.sock -e "ssh -o StrictHostKeyChecking=no" ./ ubuntu@10.0.1.126:/home/ubuntu/app
+                    echo "🗂️ Copying files to remote..."
+                    rsync -avz --delete --ignore-errors --exclude=.git --exclude=*.sock -e "ssh -o StrictHostKeyChecking=no" ./ ubuntu@10.0.1.126:/home/ubuntu/app
 
-                        '''
+                    '''
 
                 }
             }
@@ -33,25 +33,25 @@ pipeline {
             steps {
                 sshagent(credentials: ['Jenkins_ssh']) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@10.0.1.126 << 'EOF'
-                        echo "✅ Connected to remote server"
+                    ssh -o StrictHostKeyChecking=no ubuntu@10.0.1.126 <<EOF
+                    echo "✅ Connected to remote server"
 
-                        # Navigate to app folder
-                        cd /home/ubuntu/app
+                    # Navigate to app folder
+                    cd /home/ubuntu/app
 
-                        # Stop and remove containers safely
-                        docker stop django-app || true
-                        docker rm django-app || true
-                        docker stop nginx-proxy || true
-                        docker rm nginx-proxy || true
+                    # Stop and remove containers safely
+                    docker stop django-app || true
+                    docker rm django-app || true
+                    docker stop nginx-proxy || true
+                    docker rm nginx-proxy || true
 
-                        # Deploy fresh containers
-                        docker compose down || true
-                        docker compose up -d --build
+                    # Deploy fresh containers
+                    docker compose down || true
+                    docker compose up -d --build
 
-                        echo "✅ Deployment complete"
-                        EOF
-                        """
+                    echo "✅ Deployment complete"
+                    EOF
+                    """
                 }
             }
         }
