@@ -16,7 +16,7 @@ pipeline {
             steps {
                 echo "Stopping and removing any existing containers..."
                 sh '''
-                    docker compose down || true
+                    docker-compose down || true
                     docker rm -f django-app || true
                     docker rm -f nginx-proxy || true
                     docker network prune -f || true
@@ -30,8 +30,8 @@ pipeline {
             steps {
                 echo "Building and deploying Docker containers..."
                 sh '''
-                    docker compose build
-                    docker compose up -d
+                    docker-compose build
+                    docker-compose up -d
                 '''
             }
         }
