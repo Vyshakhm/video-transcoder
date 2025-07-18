@@ -47,9 +47,9 @@ pipeline {
         stage('Build and deploy..') {
             steps {
                 sshagent(credentials: ['Jenkins_ssh']) {
-                    sh '''
-                echo 🚀 Deploying on remote server...
-                ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
+                sh '''
+                    echo 🚀 Deploying on remote server...
+                    ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
                     docker compose build
                     docker compose up -d
                 EOF
