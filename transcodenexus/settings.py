@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['*','13.221.180.187']
 
 CSRF_TRUSTED_ORIGINS = [
     "http://13.221.180.187",
+    "https://13.221.180.187",
     
 ]
 
