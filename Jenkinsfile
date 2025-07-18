@@ -31,32 +31,29 @@ pipeline {
             steps {
                 sshagent(credentials: ['Jenkins_ssh']) {
                     sh '''
-                    echo 🚀 Cleaning old build...
-                    ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
-                        cd $REMOTE_PATH
+                        ssh -o StrictHostKeyChecking=no ubuntu@10.0.1.126 << 'EOF'
+                        echo "✅ Connected to remote server"
+
+                        # Stop containers safely (ignore if not running)
+                        docker stop django-app || true
+                        docker rm django-app || true
+                        docker stop nginx-proxy || true
+                        docker rm nginx-proxy || true
+
+                        cd /home/ubuntu/app
+
+                        # Start fresh
                         docker compose down || true
-                        docker rm -f django-app || true
-                        docker rm -f nginx-proxy || true
-                        docker network prune -f || true
-                    EOF
+                        docker compose up -d --build
+
+                        echo "✅ Deployment complete"
+                        EOF
                     '''
                 }
             }
         }
 
-        stage('Build and deploy..') {
-            steps {
-                sshagent(credentials: ['Jenkins_ssh']) {
-                sh '''
-                    echo 🚀 Deploying on remote server...
-                    ssh -o StrictHostKeyChecking=no $REMOTE_USER@$REMOTE_HOST << EOF
-                    docker compose build
-                    docker compose up -d
-                EOF
-                '''
-                }
-            }
-        }
+    
     }
 
     post {
