@@ -21,7 +21,13 @@ pipeline {
                 sshagent(credentials: ['Jenkins_ssh']) {
                     sh '''
                     echo "🗂️ Copying files to remote..."
-                    rsync -avz --delete --ignore-errors --exclude=.git --exclude=*.sock -e "ssh -o StrictHostKeyChecking=no" ./ ubuntu@10.0.1.126:/home/ubuntu/app
+                    rsync -avz --delete --ignore-errors \
+                    --exclude=.git \
+                    --exclude=*.sock \
+                    --exclude=__pycache__ \
+                    -e "ssh -o StrictHostKeyChecking=no" \
+                    ./ ubuntu@10.0.1.126:/home/ubuntu/app
+
 
                     '''
 
