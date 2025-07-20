@@ -1,4 +1,4 @@
-# Base Python image
+# Python image
 FROM python:3.12-slim
 
 
@@ -20,13 +20,12 @@ RUN pip install -r requirements.txt
 # Copy the Django project
 COPY . .
 
-# Collect static files (optional, for admin panel)
 # RUN python manage.py collectstatic --noinput
 RUN python manage.py makemigrations
 RUN python manage.py migrate
 
-# Expose port for gunicorn
+# Expose port 
 EXPOSE 8000
 
-# Run using Gunicorn
+# Run on Gunicorn
 CMD ["gunicorn", "transcodenexus.wsgi:application", "--bind", "0.0.0.0:8000", "--timeout", "120"]
